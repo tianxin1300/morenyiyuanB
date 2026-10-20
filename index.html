@@ -610,7 +610,7 @@ async function importBackup(f) {
         m.textContent = e === 2 ? '备份文件校验失败，文件可能已损坏或被修改。' : e === 3 ? '备份文件内容不符合格式，已拒绝恢复。' : e === 9 ? '恢复失败，而且撤销没有完全成功，本机原有数据的完整性未确认。请保留备份文件，先不要清除或再次恢复，并立即导出当前数据。' : e === 8 ? '备份里图片过多或单张过大（上限 1000 张、每张约 20 MB），已拒绝恢复。' : e === 6 ? '密码不对，或备份文件已损坏。注意：忘记密码无法找回。' : e === 7 ? '这个备份已加密，请先在上方「备份密码」里填写密码。' : e === 4 ? '备份里的图片数据损坏，已拒绝恢复，本机数据未改动。' : e === 5 ? '恢复过程中写入失败（可能空间不足），已撤销，本机原有数据未改动。' : '这不是有效的备份文件。';
     }
 }
-const bkView = () => `<div class="card hd"><h2>数据备份与恢复</h2><p class="sub">备份包含全部档案、时间线、指标和图片，不含积分与兑换码。换设备、清理浏览器之前，请先导出。</p><p>${A.bk ? '上次备份：' + A.bk : '<b>还没有备份过。</b>'}</p>${S.quota && S.quota.quota ? `<p class="sub">本机已用空间约 ${(S.quota.usage / 1048576).toFixed(1)} MB（浏览器给的上限约 ${(S.quota.quota / 1048576).toFixed(0)} MB，仅供参考）</p>` : ''}<label>备份密码（可不填）</label><input type="password" id="bkpw" autocomplete="new-password" placeholder="至少 8 位；导出时填写则加密，恢复加密备份时也填这里"><p class="sub">填了密码，备份文件里的档案和图片会加密。<b>忘记密码无法找回</b>，请自己牢记；不填则导出未加密文件。</p><div class="bar"><button class="btn" data-act="bkexp">导出完整备份</button></div><label>从备份文件恢复</label><input type="file" id="bkf" accept=".json,application/json"><div class="bar"><button class="ghost" data-act="bkimp">恢复备份</button></div><p class="sub" id="bkm"></p></div><div class="card"><h2>清除本机数据</h2><p class="sub">删除这台设备浏览器里的全部档案、记录、指标和图片，不影响你已导出的备份文件。清除前请先导出备份。</p><div class="bar"><button class="ghost del" data-act="wipe">清除全部数据</button></div></div><div class="bar"><button class="ghost" data-act="back">返回档案</button></div>`;
+const bkView = () => `<div class="card hd"><h2>数据备份与恢复</h2><p class="sub">备份包含全部档案、时间线、指标和图片，不含积分与兑换码。换设备、清理浏览器之前，请先导出。</p><p>${A.bk ? '上次备份：' + A.bk : '<b>还没有备份过。</b>'}</p>${S.quota && S.quota.quota ? `<p class="sub">本机已用空间约 ${(S.quota.usage / 1048576).toFixed(1)} MB（浏览器给的上限约 ${(S.quota.quota / 1048576).toFixed(0)} MB，仅供参考）</p>` : ''}<label>备份密码（可不填）</label><input type="password" id="bkpw" autocomplete="new-password" placeholder="至少 8 位；导出时填写则加密，恢复加密备份时也填这里"><p class="sub">填了密码，备份文件里的档案和图片会加密。<b>忘记密码无法找回</b>，请自己牢记；不填则导出未加密文件。</p><div class="bar"><button class="btn" data-act="bkexp">导出完整备份</button></div><label>从备份文件恢复</label><input type="file" id="bkf" accept=".json,application/json"><div class="bar"><button class="ghost" data-act="bkimp">恢复备份</button></div><p class="sub" id="bkm"></p></div><div class="card"><h2>清除本机病历数据</h2><p class="sub">仅删除这台设备浏览器里的病历档案、记录、指标和图片；积分、兑换/解锁状态及显示偏好会保留。已导出的备份不受影响。清除前请先导出备份。</p><div class="bar"><button class="ghost del" data-act="wipe">清除本机病历数据</button></div></div><div class="bar"><button class="ghost" data-act="back">返回档案</button></div>`;
 const kindList = p => [...new Set([...KINDS, ...(p.tl || []).map(r => r.kind)])];
 const tlFilter = (p, n) => n ? `<div class="row"><input id="tq" type="search" placeholder="搜索内容、医院、日期" value="${esc(S.q || '')}" aria-label="搜索"><select id="tkf" aria-label="按类型筛选"><option value="">全部类型</option>${kindList(p).map(k => `<option ${S.kf === k ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select></div>` : '';
 const editForm = (r, p) => `<div class="card hd"><h2>编辑记录</h2><label>记录类型</label><select id="ek">${kindList(p).map(k => `<option ${k === r.kind ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select><label>日期</label><input id="ed" type="date" value="${esc(r.date)}"><label>医院 / 科室</label><input id="eh" value="${esc(r.hosp || '')}"><label>内容摘要</label><textarea id="et">${esc(r.text || '')}</textarea>${(r.fields || []).map((x, i) => `<label>${esc(x.n)}</label><input data-ef="${i}" value="${esc(x.v)}">`).join('')}${(r.imgs || []).length ? '<p class="sub">图片保持不变；如需更换图片，请删除这条记录后重新添加。</p>' : ''}<div class="bar"><button class="ghost" data-act="tlcancel">取消</button><button class="btn" data-act="tlupd" data-id="${r.id}">保存修改</button></div></div>`;
@@ -1115,7 +1115,7 @@ function extra(act, b, p) {
         return 1;
     }
     if (act === 'wipe') {
-        if (!okAsk('将删除本机全部档案、记录、指标和图片，且无法恢复。请输入「清除」确认。', { typed: '清除' }))
+        if (!okAsk('将删除本机所有病历档案、记录、指标和图片，且无法恢复；积分、兑换/解锁状态及显示偏好会保留。请输入「清除」确认。', { typed: '清除' }))
             return 2;
         (async () => {
             let ok = true;
@@ -1146,7 +1146,7 @@ function extra(act, b, p) {
                 DIRTY = 0;
                 S.view = 'list';
                 view();
-                alert('已清除本机全部数据。');
+                alert('已清除本机病历数据。');
             }
             else {
                 view();
