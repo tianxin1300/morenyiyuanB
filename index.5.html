@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>就医伴侣 v34｜下一轮复诊版</title>
-<meta name="description" content="就医伴侣 v25 体验版：把用户自己记录的就医资料整理成可确认、可撤销的行动备忘。仅作资料整理，不提供诊疗建议。">
+<title>就医伴侣｜个人就诊档案与陪护备忘工具</title>
+<meta name="description" content="仅用于整理就诊资料、备忘事项；不提供诊疗或健康建议，不能替代医生。资料只保存在本机浏览器，不会自动上传。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="就医伴侣｜个人就诊档案与陪护备忘工具">
 <meta property="og:description" content="仅用于整理就诊资料、备忘事项；不提供诊疗或健康建议，不能替代医生。资料只保存在本机浏览器，不会自动上传。">
-<meta property="og:image" content="https://jiuyiban.netlify.app/og.png">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="theme-color" content="#0d2a22">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="就医伴侣">
@@ -247,8 +245,36 @@ details.fl{margin-top:10px}details.fl>summary{list-style:none;cursor:pointer;min
 .checkline{display:flex;align-items:flex-start;gap:9px;line-height:1.5}.checkline input{margin-top:4px;accent-color:#13615c}
 .backup-risk{border:1px solid #d7a23a;background:rgba(255,248,225,.78);color:#5b4514;border-radius:10px;padding:10px 12px;margin:10px 0 14px;font-size:14px}.backup-risk ul{margin:5px 0 0;padding-left:20px}
 .pzd input[data-pz="who"]{margin-bottom:4px}
+
+/* v35: 复诊卡与今天卡沿用统一的柔和卡片色，不再偏白或偏暗 */
+.today,.flow{background:var(--card)!important;color:var(--ink);border:1px solid rgba(255,255,255,.55);box-shadow:0 10px 30px -14px rgba(0,20,14,.55)}
+.today .item{background:rgba(255,255,255,.22);border-color:rgba(0,40,30,.14)}
+.today h2,.flow h2,.flow .tlh h2{color:var(--ink)}
+.flow .sub,.flow .flow-main small{color:var(--mute)}
+.flow .flow-step{border-bottom-color:rgba(0,40,30,.14)}
+.flow .flow-num{background:rgba(15,95,89,.16);color:#0f5f59}
+.flow .flow-done .flow-num{background:#13615c;color:#fff}.flow .flow-done b{color:#0f5f59}
+.flow .tag{background:rgba(255,255,255,.4);border-color:rgba(0,40,30,.2);color:var(--ink)}
+.post-visit{border-top-color:rgba(0,40,30,.16)}
+.post-visit textarea,.post-visit input[type=date]{background:rgba(255,255,255,.7);color:var(--ink)}
+
+/* 选中的病种/类型卡片：明显变色 + 对勾 */
+.opt{position:relative;transition:background .15s,border-color .15s,transform .1s}
+.opt:active{transform:scale(.985)}
+/* 选中态：与毛玻璃卡片同色系，只加一层主题色淡染 + 实线描边 + 对勾，不突兀 */
+.opts .opt[aria-pressed=true]{background:color-mix(in srgb,var(--c) 22%,var(--card))!important;color:var(--ink);border:1.5px solid color-mix(in srgb,var(--c) 75%,#fff)!important;box-shadow:inset 5px 0 0 var(--c),0 10px 30px -14px rgba(0,20,14,.55)!important;padding-right:48px}
+.opts .opt[aria-pressed=true] small{color:var(--mute)}
+.opts .opt[aria-pressed=true]::after{content:'✓';position:absolute;right:14px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:50%;background:var(--c);color:#fff;font-size:14px;font-weight:800;display:grid;place-items:center}
+.chip[aria-pressed=true]{background:color-mix(in srgb,#13615c 82%,#fff)!important;color:#fff!important;border-color:rgba(255,255,255,.7)!important}
+/* v40: 卡片再提亮并提高不透明度（半透明叠在深色森林上会发灰发暗） */
+:root:root{--card:rgba(238,246,241,.95)!important;--bg:rgba(228,240,233,.95)!important;--mute:#3f5750!important}
+.card,.opt,.qk button,.tabs,.tip{box-shadow:0 8px 24px -14px rgba(0,20,14,.45)!important}
+.pnav{background:rgba(24,64,55,.42)!important}
+.sm-check .checkline,.checkline{min-height:48px;padding:6px 0}.sm-check .checkline input,.checkline input{width:28px;height:28px;flex:none}
+.ckr{min-height:48px}.ckr input{width:28px;height:28px}
+.ckr label,.checkline{cursor:pointer}
 </style></head><body><main id="app"></main>
-<script>const COL = { tumor: '#7c3a8c', breast: '#be3a6e', lymphoma: '#6d3a8c', myeloma: '#8a3a6d', leukemia: '#a3304f', auto: '#2f7d6d', ckd: '#3a6ea5', colorectal: '#8b5a2b', lung: '#4a5d7e', hyper: '#2D6B8F', diabetes: '#1d5fb8', cardio: '#a83f3f', thyroid: '#8a6d1d', gout: '#5a6b2f', rare: '#0f766e' };
+<script>const COL = { tumor: '#7c3a8c', breast: '#be3a6e', lymphoma: '#6d3a8c', myeloma: '#8a3a6d', leukemia: '#a3304f', auto: '#2f7d6d', ckd: '#3a6ea5', colorectal: '#8b5a2b', lung: '#4a5d7e', hyper: '#2D6B8F', diabetes: '#1d5fb8', cardio: '#a83f3f', thyroid: '#8a6d1d', gout: '#5a6b2f', rare: '#0f766e', other: '#5d6b73' };
 const T = [{ k: 'type', l: '类型', o: ['手术', '化疗', '免疫', '靶向', '内分泌治疗', '放疗', '其他'] }];
 const TGT = { k: 'targets', t: 'list', l: '自定义指标目标', add: '添加指标', cols: [{ k: 'name', l: '指标名称', ph: '如 体重' }, { k: 'val', l: '目标值', ph: '如 ≤65 kg' }] };
 const BASE = [{ k: 'diag', t: 'date', l: '诊断时间' }, { k: 'hosp', t: 'text', l: '就诊医院' }, { k: 'dept', t: 'text', l: '主治科室' }];
@@ -270,6 +296,11 @@ D.myeloma = { n: '多发性骨髓瘤', d: '', f: [...BASE, { k: 'mtype', t: 'sel
 D.leukemia = { n: '白血病', d: '', f: [...BASE, { k: 'ltype', t: 'sel', l: '类型', o: ['急性髓系白血病', '急性淋巴细胞白血病', '慢性髓系白血病', '慢性淋巴细胞白血病', '其他'] }, { k: 'risk', t: 'text', l: '危险分层', ph: '按医生所告知填写' }, { k: 'gene', t: 'area', l: '染色体 / 融合基因结果', ph: '如 BCR-ABL 等' }, { k: 'bm', t: 'area', l: '骨髓检查结果' }, TXL(['化疗', '靶向', '免疫治疗', '造血干细胞移植', '放疗', '其他']), TGT] };
 D.auto = { n: '自身免疫病', d: '红斑狼疮、类风湿关节炎等，含抗体、受累脏器、用药', f: [...BASE, { k: 'which', t: 'sel', l: '具体疾病', o: ['系统性红斑狼疮', '类风湿关节炎', '干燥综合征', '强直性脊柱炎', '血管炎', '重症肌无力', '其他'] }, { k: 'ab', t: 'area', l: '自身抗体结果', ph: '如 ANA、抗dsDNA、RF、抗CCP 等' }, { k: 'organ', t: 'area', l: '受累脏器记录' }, { k: 'hist', t: 'list', l: '治疗用药记录', add: '添加用药记录', cols: [{ k: 'type', l: '药物类别', sel: ['糖皮质激素', '免疫抑制剂', '生物制剂', '羟氯喹', '其他'] }, { k: 'date', l: '开始日期', date: 1 }, { k: 'note', l: '药名、剂量、调整情况' }] }, TGT] };
 D.ckd = { n: '慢性肾病', d: '肌酐、eGFR、尿蛋白、透析与用药', f: [...BASE, { k: 'cause', t: 'text', l: '原发病 / 病因', ph: '按医生所告知填写' }, { k: 'cstage', t: 'sel', l: 'CKD 分期', o: ['1期', '2期', '3期', '4期', '5期', '暂不明确'] }, { k: 'rrt', t: 'sel', l: '肾脏替代治疗', o: ['未透析', '血液透析', '腹膜透析', '肾移植后'] }, { k: 'hist', t: 'list', l: '用药与治疗记录', add: '添加记录', cols: [{ k: 'type', l: '类别', sel: ['降压药', '降尿蛋白药', '免疫抑制 / 激素', '促红素 / 铁剂', '降磷 / 钙剂', '透析相关', '其他'] }, { k: 'date', l: '开始日期', date: 1 }, { k: 'note', l: '药名、剂量、调整情况' }] }, TGT] };
+D.other = { n: '其他', d: '以上没有列出的疾病：自己填写病名，记录情况、指标和用药', f: [...BASE, { k: 'oname', t: 'text', l: '疾病名称', ph: '按医生所告知填写，如 哮喘、肝病' }, { k: 'onote', t: 'area', l: '病情和治疗情况', ph: '如 诊断经过、手术或用药情况' }, TGT] };
+const ALG = { k: 'allergy', t: 'area', l: '过敏史 / 药物不良反应', ph: '如 青霉素过敏（皮疹）；没有就写“无”' };
+const HIS = { k: 'hist0', t: 'area', l: '合并症 / 既往病史 / 做过的手术', ph: '如 高血压10年、糖尿病、2019年胆囊切除；没有就写“无”' };
+const FLG = { k: 'flags', t: 'multi', l: '需要医生知道的情况', o: ['正在用抗凝药或抗血小板药', '体内有支架、起搏器或金属植入物', '怀孕或哺乳期', '心脏功能不好', '肾功能不好或在透析', '有出血或手术后伤口未愈'] };
+Object.keys(D).forEach(k => { const f = D[k].f; if (f.some(x => x.k === 'allergy')) return; f.splice(Math.min(3, f.length), 0, ALG, FLG, HIS); });
 let S = { profiles: [], cur: null, view: 'list', draft: {}, tab: "info", range: "all", q: "", kf: "", edit: null, mxe: null }, mem = null;
 let LOCK = 0, BADOK = false, DIRTY = 0;
 function load() {
@@ -395,6 +426,7 @@ function view() {
         const d = S.draft;
         h += backBar() + `<div class="card"><h2>新建档案</h2><label>成员称呼</label><input id="mn" placeholder="如 妈妈、小宇、我自己" value="${esc(d.member || '')}">
 <label>下次复诊日期（可不填，之后也能补充）</label><input id="nvd_new" type="date" value="${esc(d.nvd || '')}"><label>选择病种</label><div class="opts">${Object.keys(D).filter(k => !TM[k]).map(k => `<button class="opt" style="--c:${COL[k]}" aria-pressed="${d.disease === k}" data-act="dis" data-d="${k}">${D[k].n}<small>${D[k].d}</small></button>`).join('')}</div>
+${d.disease === 'other' ? `<label>疾病名称（必填）</label><input id="oname_new" maxlength="40" placeholder="按医生所告知填写，如 哮喘、肝病" value="${esc(d.oname || '')}">` : ''}
 ${d.disease === 'tumor' ? `<label>肿瘤类型</label><div style="display:flex;flex-wrap:wrap;gap:8px">${SUBS.map(s => `<button class="chip" aria-pressed="${d.sub === s}" data-act="sub" data-s="${s}">${s}</button>`).join('')}</div>` : ''}<p class="sub" style="margin-top:10px">即将支持：慢性肝病、心血管慢病</p>${d.disease === 'rare' ? `<label>患者类型</label><div class="checks"><label><input type="radio" name="ag" value="child" ${d.age === 'child' ? 'checked' : ''}>儿童</label><label><input type="radio" name="ag" value="adult" ${d.age === 'adult' ? 'checked' : ''}>成人</label></div>` : ''}
 <div class="bar"><button class="ghost" data-act="cancel">取消</button><button class="btn" data-act="create">创建档案</button></div></div>`;
     }
@@ -403,7 +435,7 @@ ${d.disease === 'tumor' ? `<label>肿瘤类型</label><div style="display:flex;f
         if (!p)
             h += posCard() + `<div class="card empty"><h2>还没有档案</h2><p class="sub">选一个病种，建立第一份档案。</p><button class="btn" data-act="new">新建档案</button> <button class="ghost" data-act="demo">查看示例</button> <button class="ghost" data-act="bk">从备份恢复</button></div>` + hubData();
         else
-            h += `<div class="pnav" style="--c:${COL[p.disease]}"><div class="phd"><button class="back" data-act="home" aria-label="返回全部档案">‹ 返回</button><b class="pname">${esc(label(p))}</b></div>` + tabs() + `</div>` + (S.tab === "tl" ? tlView(p) : S.tab === "mx" ? mxView(p) : S.tab === "sm" ? smView(p) : visitFlowCard(p, nextVisit(p)) + `<div class="card hd" style="--c:${COL[p.disease]}"><h2>${esc(label(p))}</h2><label>下次复诊日期（可不填）</label><div class="row"><input type="date" data-k="nvd" value="${esc(p.data.nvd || '')}" aria-label="下次复诊日期"><button class="ghost" data-act="tics" data-pid="${p.id}" data-v="1">下载日历提醒文件</button></div><p class="sub">填了日期，复诊前 7 天首页会提醒，并带你去准备清单和摘要。</p><label>成员称呼</label><input data-mem="1" value="${esc(p.member)}">${D[p.disease].f.map(f => field(f, p)).join('')}${medsView(p)}<div class="bar"><span class="saved" id="sv">修改会自动保存在本机</span>${more('<button class="ghost del" data-act="del">删除档案</button>')}</div></div>`);
+            h += `<div class="pnav" style="--c:${COL[p.disease]}"><div class="phd"><button class="back" data-act="home" aria-label="返回全部档案">‹ 返回</button><b class="pname">${esc(label(p))}</b></div>` + tabs() + `</div>` + (S.tab === "tl" ? tlView(p) : S.tab === "mx" ? mxView(p) : S.tab === "sm" ? smView(p) : visitFlowCard(p, flowVisit(p)) + `<div class="card hd" style="--c:${COL[p.disease]}"><h2>${esc(label(p))}</h2><label>下次复诊日期（可不填）</label><div class="row"><input type="date" data-k="nvd" value="${esc(p.data.nvd || '')}" aria-label="下次复诊日期"><button class="ghost" data-act="tics" data-pid="${p.id}" data-v="1">下载日历提醒文件</button></div><p class="sub">填了日期，复诊前 7 天首页会提醒，并带你去准备清单和摘要。</p><label>成员称呼</label><input data-mem="1" value="${esc(p.member)}">${D[p.disease].f.map(f => field(f, p)).join('')}${medsView(p)}<div class="bar"><span class="saved" id="sv">修改会自动保存在本机</span>${more('<button class="ghost del" data-act="del">删除档案</button>')}</div></div>`);
     }
     h += foot();
     a.innerHTML = h;
@@ -413,7 +445,7 @@ ${d.disease === 'tumor' ? `<label>肿瘤类型</label><div style="display:flex;f
 const KINDS = ['就诊记录', '化验抽血记录', '影像检查记录', '治疗记录', '用药', '症状变化', '不良反应'];
 const SUBD = { '乳腺癌': 'breast', '结直肠癌': 'colorectal', '肺癌': 'lung', '淋巴瘤': 'lymphoma', '多发性骨髓瘤': 'myeloma', '白血病': 'leukemia' }, TM = { breast: 1, colorectal: 1, lung: 1, lymphoma: 1, myeloma: 1, leukemia: 1 };
 const SUBS = ['乳腺癌', '结直肠癌', '肺癌', '胃癌', '肝癌', '淋巴瘤', '多发性骨髓瘤', '白血病', '其他肿瘤'];
-const dn = p => TM[p.disease] ? '肿瘤·' + D[p.disease].n : p.disease === 'tumor' ? '肿瘤' + (p.sub ? '·' + p.sub : '') : p.disease === 'auto' && p.data && p.data.which ? '自身免疫病·' + p.data.which : D[p.disease].n;
+const dn = p => TM[p.disease] ? '肿瘤·' + D[p.disease].n : p.disease === 'tumor' ? '肿瘤' + (p.sub ? '·' + p.sub : '') : p.disease === 'auto' && p.data && p.data.which ? '自身免疫病·' + p.data.which : p.disease === 'other' && p.data && p.data.oname ? '其他·' + p.data.oname : D[p.disease].n;
 const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
 let DB;
 const idb = () => DB || (DB = new Promise((res, rej) => { try {
@@ -442,13 +474,13 @@ function validBk(q) {
     if (!q || !okId(q.id) || !Object.prototype.hasOwnProperty.call(D, q.disease) || typeof q.member !== 'string' || typeof q.data !== 'object' || !q.data || !['tl', 'mx', 'orders', 'tpls'].every(k => Array.isArray(q[k] || []) && (q[k] || []).length <= 20000))
         return false;
     for (const r of q.tl || [])
-        if (!r || !okId(r.id) || !okD(r.date) || typeof r.kind !== 'string' || (r.text !== undefined && typeof r.text !== 'string') || !Array.isArray(r.imgs || []) || !(r.imgs || []).every(okId))
+        if (!r || !okId(r.id) || !okD(r.date) || typeof r.kind !== 'string' || (r.time !== undefined && !/^\d{2}:\d{2}$/.test(r.time)) || (r.text !== undefined && typeof r.text !== 'string') || !Array.isArray(r.imgs || []) || !(r.imgs || []).every(okId))
             return false;
     for (const m of q.mx || []) {
         if (!m || typeof m.name !== 'string' || !okId(m.id) || !okN(m.lo) || !okN(m.hi) || !Array.isArray(m.pts))
             return false;
         for (const x of m.pts)
-            if (!x || !okId(x.id) || !okD(x.date) || typeof x.v !== 'number' || !isFinite(x.v) || (x.rl !== undefined && !okN(x.rl)) || (x.rh !== undefined && !okN(x.rh)) || (x.org !== undefined && typeof x.org !== 'string'))
+            if (!x || !okId(x.id) || !okD(x.date) || typeof x.v !== 'number' || !isFinite(x.v) || (x.rl !== undefined && !okN(x.rl)) || (x.rh !== undefined && !okN(x.rh)) || (x.org !== undefined && typeof x.org !== 'string') || (x.time !== undefined && !/^\d{2}:\d{2}$/.test(x.time)))
                 return false;
     }
     for (const o of q.orders || [])
@@ -461,7 +493,7 @@ function validBk(q) {
         return false;
     if (q.ck !== undefined && !(q.ck && Array.isArray(q.ck.items) && q.ck.items.length <= 100 && q.ck.items.every(x => x && okId(x.id) && typeof x.t === 'string' && x.t.length <= 100)))
         return false;
-    if (q.meds !== undefined && !(Array.isArray(q.meds) && q.meds.length <= 50 && q.meds.every(x => x && okId(x.id) && typeof x.name === 'string' && x.name.length <= 60 && Number.isInteger(x.per) && x.per >= 1 && x.per <= 6)))
+    if (q.meds !== undefined && !(Array.isArray(q.meds) && q.meds.length <= 50 && q.meds.every(x => x && okId(x.id) && typeof x.name === 'string' && x.name.length <= 60 && Number.isInteger(x.per) && x.per >= 1 && x.per <= 6 && (x.dose === undefined || (typeof x.dose === 'string' && x.dose.length <= 40)) && (x.freq === undefined || MFREQ[x.freq]) && (x.start === undefined || x.start === '' || /^\d{4}-\d{2}-\d{2}$/.test(x.start)) && (x.note === undefined || (typeof x.note === 'string' && x.note.length <= 60)) && (x.stopped === undefined || typeof x.stopped === 'boolean') && (x.stopAt === undefined || /^\d{4}-\d{2}-\d{2}$/.test(x.stopAt)))))
         return false;
     return true;
 }
@@ -662,20 +694,29 @@ async function importBackup(f) {
 const bkView = () => `<div class="card hd"><h2>数据备份与恢复</h2><p class="sub">备份包含全部档案、时间线、指标和图片。换设备、清理浏览器之前，请先导出。</p><div class="backup-risk"><b>先看清楚再操作</b><ul><li>资料只保存在当前浏览器，清理数据、无痕模式或换设备可能丢失。</li><li>不填写密码导出的文件是明文病历；建议设置独立的备份密码。</li><li>备份文件请保存到手机以外的可信位置，不要发到群聊或公共网盘。</li></ul></div><p>${A.bk ? '上次备份：' + A.bk : '<b>还没有备份过。</b>'}</p>${S.quota && S.quota.quota ? `<p class="sub">本机已用空间约 ${(S.quota.usage / 1048576).toFixed(1)} MB（浏览器给的上限约 ${(S.quota.quota / 1048576).toFixed(0)} MB，仅供参考）</p>` : ''}<label>备份密码（强烈建议设置）</label><input type="password" id="bkpw" autocomplete="new-password" placeholder="至少 8 位；导出时填写则加密，恢复加密备份时也填这里"><label>再输一次（仅设置密码时填）</label><input type="password" id="bkpw2" autocomplete="new-password" placeholder="再输入一遍相同的密码"><p class="sub" style="color:var(--warn,#b42318)"><b>不填密码导出的备份是明文文件</b>，任何人拿到都能看到病历内容。请妥善保管，不要发到群里或公共网盘。</p><p class="sub">填了密码，备份文件里的档案和图片会加密。<b>忘记密码无法找回</b>，请自己牢记；不填则导出未加密文件。</p><div class="bar"><button class="btn" data-act="bkexp">导出完整备份</button></div><label>从备份文件恢复</label><input type="file" id="bkf" accept=".json,application/json"><div class="bar"><button class="ghost" data-act="bkimp">选择文件后恢复</button></div><p class="sub" id="bkm"></p></div><div class="card"><h2>清除本机数据</h2><p class="sub">删除这台设备浏览器里的全部档案、记录、指标和图片，不影响你已导出的备份文件。清除前请先导出备份。</p><div class="bar"><button class="ghost del" data-act="wipe">清除全部数据</button></div></div><div class="bar"><button class="ghost" data-act="back">返回档案</button></div>`;
 const kindList = p => [...new Set([...KINDS, ...(p.tl || []).map(r => r.kind)])];
 const tlFilter = (p, n) => n ? `<div class="row"><input id="tq" type="search" placeholder="搜索内容、医院、日期" value="${esc(S.q || '')}" aria-label="搜索"><select id="tkf" aria-label="按类型筛选"><option value="">全部类型</option>${kindList(p).map(k => `<option ${S.kf === k ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select></div>` : '';
-const editForm = (r, p) => `<div class="card hd"><h2>编辑记录</h2><label>记录类型</label><select id="ek">${kindList(p).map(k => `<option ${k === r.kind ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select><label>日期</label><input id="ed" type="date" value="${esc(r.date)}"><label>医院 / 科室</label><input id="eh" value="${esc(r.hosp || '')}"><label>内容摘要</label><textarea id="et">${esc(r.text || '')}</textarea>${(r.fields || []).map((x, i) => `<label>${esc(x.n)}</label><input data-ef="${i}" value="${esc(x.v)}">`).join('')}${(r.imgs || []).length ? '<p class="sub">图片保持不变；如需更换图片，请删除这条记录后重新添加。</p>' : ''}<div class="bar"><button class="ghost" data-act="tlcancel">取消</button><button class="btn" data-act="tlupd" data-id="${r.id}">保存修改</button></div></div>`;
+const editForm = (r, p) => `<div class="card hd"><h2>编辑记录</h2><label>记录类型</label><select id="ek">${kindList(p).map(k => `<option ${k === r.kind ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select><label>日期</label><input id="ed" type="date" value="${esc(r.date)}"><label>具体时间（可不填）</label><input id="eti" type="time" value="${esc(r.time || '')}"><label>医院 / 科室</label><input id="eh" value="${esc(r.hosp || '')}"><label>内容摘要</label><textarea id="et">${esc(r.text || '')}</textarea>${(r.fields || []).map((x, i) => `<label>${esc(x.n)}</label><input data-ef="${i}" value="${esc(x.v)}">`).join('')}${(r.imgs || []).length ? '<p class="sub">图片保持不变；如需更换图片，请删除这条记录后重新添加。</p>' : ''}<div class="bar"><button class="ghost" data-act="tlcancel">取消</button><button class="btn" data-act="tlupd" data-id="${r.id}">保存修改</button></div></div>`;
 function recCard(r, p) { if (S.edit === r.id)
-    return editForm(r, p); return `<div class="card"><div class="tlh"><b>${r.star ? '★ ' : ''}${esc(r.date)}</b><span class="tag">${esc(r.kind)}${r.tpl ? ' · ' + esc(r.tpl) : ''}</span></div>${r.hosp ? `<div class="sub">${esc(r.hosp)}</div>` : ''}<div class="tlt">${esc(r.text)}</div>${(r.fields || []).map(x => `<div class="tlt"><b>${esc(x.n)}</b>：${esc(x.v)}</div>`).join('')}${(r.imgs || []).length ? `<div class="thumbs">${r.imgs.map(k => `<img data-img="${k}" data-act="zoom" alt="已上传图片">`).join('')}</div>` : ''}<div class="row"><button class="ghost" data-act="tledit" data-id="${r.id}">编辑</button>${more(`<button class="ghost" data-act="tlstar" data-id="${r.id}">${r.star ? '★ 取消重点' : '☆ 设为重点'}</button><button class="ghost del" data-act="tldel" data-id="${r.id}">删除</button>`)}</div></div>`; }
+    return editForm(r, p); return `<div class="card"><div class="tlh"><b>${r.star ? '★ ' : ''}${esc(r.date)}${r.time ? ' ' + esc(r.time) : ''}</b><span class="tag">${esc(r.kind)}${r.tpl ? ' · ' + esc(r.tpl) : ''}</span></div>${r.hosp ? `<div class="sub">${esc(r.hosp)}</div>` : ''}<div class="tlt">${esc(r.text)}</div>${(r.fields || []).map(x => `<div class="tlt"><b>${esc(x.n)}</b>：${esc(x.v)}</div>`).join('')}${(r.imgs || []).length ? `<div class="thumbs">${r.imgs.map(k => `<img data-img="${k}" data-act="zoom" alt="已上传图片">`).join('')}</div>` : ''}<div class="row"><button class="ghost" data-act="tledit" data-id="${r.id}">编辑</button>${more(`<button class="ghost" data-act="tlstar" data-id="${r.id}">${r.star ? '★ 取消重点' : '☆ 设为重点'}</button><button class="ghost del" data-act="tldel" data-id="${r.id}">删除</button>`)}</div></div>`; }
 function smData(p, rgo) {
     syncT(p);
     const d = p.data, rg = rgo || S.sr || '3m', days = { '3m': 92, '6m': 183, all: 36500 }[rg], lim = Date.now() - days * 864e5, inr = x => new Date(x).getTime() >= lim, sec = [], M = D[p.disease], B = [];
-    M.f.forEach(f => { if (f.t === 'list' || (f.kid && p.age !== 'child'))
+    M.f.forEach(f => { if (f.t === 'list' || f.k === 'allergy' || f.k === 'flags' || (f.kid && p.age !== 'child'))
         return; const v = d[f.k], s = f.t === 'multi' ? (v || []).join('、') : v; if (s !== undefined && s !== null && s !== '')
         B.push(f.l + '：' + s); });
     const tg = (d.targets || []).filter(x => x.name || x.val).map(x => (x.name || '') + '：' + (x.val || ''));
     if (tg.length)
         B.push('自定义指标目标：' + tg.join('；'));
+    const KA = ['过敏史 / 药物不良反应：' + ((d.allergy || '').trim() || '未填写（请当面向医生说明）')];
+    if ((d.flags || []).length)
+        KA.push('需要医生知道：' + d.flags.join('、'));
+    sec.push({ h: '关键提示（患者自填）', lines: KA });
     if (B.length)
         sec.push({ h: '基本信息', lines: B });
+    const MD = (p.meds || []).filter(m => !m.stopped).map(m => m.name + ' · ' + medTxt(m)), MS = (p.meds || []).filter(m => m.stopped).map(m => m.name + ' · ' + medTxt(m));
+    if (MD.length)
+        sec.push({ h: '目前在用的药（患者自填，请对照处方核对）', lines: MD });
+    if (MS.length)
+        sec.push({ h: '已停用的药', lines: MS });
     M.f.forEach(f => { if (f.t !== 'list' || f.k === 'targets')
         return; const L = (d[f.k] || []).slice().sort((a, b) => (a.date || '').localeCompare(b.date || '')).map(it => f.cols.map(c => it[c.k]).filter(Boolean).join(' · ')).filter(Boolean); if (L.length)
         sec.push({ h: f.l, lines: L }); });
@@ -686,7 +727,7 @@ function smData(p, rgo) {
     if (dd.length)
         ordSec.push({ h: '近期已完成的医嘱', lines: dd.map(fo) });
     const tl = (p.tl || []).filter(r => inr(r.date)).sort((a, b) => b.date.localeCompare(a.date));
-    const line = r => [r.date, r.kind + (r.tpl ? '·' + r.tpl : ''), r.hosp, r.text, ...(r.fields || []).map(x => x.n + '：' + x.v)].filter(Boolean).join(' · ') + ((r.imgs || []).length ? '（附图' + r.imgs.length + '张）' : '');
+    const line = r => [r.date + (r.time ? ' ' + r.time : ''), r.kind + (r.tpl ? '·' + r.tpl : ''), r.hosp, r.text, ...(r.fields || []).map(x => x.n + '：' + x.v)].filter(Boolean).join(' · ') + ((r.imgs || []).length ? '（附图' + r.imgs.length + '张）' : '');
     const grp = (a, h) => { if (a.length)
         sec.push({ h, lines: a.slice(0, 10).map(line).concat(a.length > 10 ? ['另有 ' + (a.length - 10) + ' 条较早记录未列出，见时间线'] : []) }); }, tx = r => ['用药', '治疗记录', '症状变化', '不良反应'].includes(r.kind);
     const stl = (p.tl || []).filter(r => r.star).sort((a, b) => b.date.localeCompare(a.date));
@@ -700,14 +741,20 @@ function smData(p, rgo) {
     grp(tl.filter(r => !KN.includes(r.kind)), '其他记录');
     const ml = [];
     (p.mx || []).forEach(m => { const pts = m.pts.filter(x => inr(x.date)).sort((a, b) => a.date.localeCompare(b.date)); if (!pts.length)
-        return; const last = pts[pts.length - 1], seq = pts.length <= 6 ? pts.map(x => x.date.slice(5) + ' ' + x.v + (x.note ? '（' + x.note + '）' : '')).join('；') : pts[0].date.slice(5) + ' ' + pts[0].v + ' → ' + last.date.slice(5) + ' ' + last.v + '（共 ' + pts.length + ' 次）'; ml.push(m.name + (m.unit ? '（' + m.unit + '）' : '') + '：' + seq + (hasL(last) ? '（最新值的化验单参考范围 ' + (last.rl === '' ? '—' : last.rl) + ' ~ ' + (last.rh === '' ? '—' : last.rh) + (last.org ? '，' + last.org : '') + '）' : '') + (inRP(m, last) ? '' : '  ▲ 最新值超出' + (hasL(last) ? '本次化验单参考范围' : m.my ? (SRC[m.rsrc || 'me'] || SRC.me) : m.src === 't' ? '档案里的目标' : '通用参考值'))); });
+        return; const last = pts[pts.length - 1], seq = pts.length <= 6 ? pts.map(x => x.date.slice(5) + (x.time ? ' ' + x.time : '') + ' ' + x.v + (x.note ? '（' + x.note + '）' : '')).join('；') : pts[0].date.slice(5) + ' ' + pts[0].v + ' → ' + last.date.slice(5) + ' ' + last.v + '（共 ' + pts.length + ' 次）'; ml.push(m.name + (m.unit ? '（' + m.unit + '）' : '') + '：' + seq + (hasL(last) ? '（最新值的化验单参考范围 ' + (last.rl === '' ? '—' : last.rl) + ' ~ ' + (last.rh === '' ? '—' : last.rh) + (last.org ? '，' + last.org : '') + '）' : '') + (inRP(m, last) ? '' : '  ▲ 最新值超出' + (hasL(last) ? '本次化验单参考范围' : m.my ? (SRC[m.rsrc || 'me'] || SRC.me) : m.src === 't' ? '档案里的目标' : '通用参考值'))); });
     if (ml.length)
         sec.push({ h: '指标变化', lines: ml });
     grp(kd(['症状变化', '不良反应']), '近期症状与不良反应');
     ordSec.forEach(x => sec.push(x));
-    const q = (d.ask || '').trim();
+    const q = (d.ask || '').trim(), top = [];
     if (q)
-        sec.push({ h: '这次想问医生的问题', lines: q.split('\n').map(s => s.trim()).filter(Boolean) });
+        top.push({ h: '这次想问医生的问题', lines: q.split('\n').map(s => s.trim()).filter(Boolean) });
+    const lastV = (p.tl || []).filter(r => r.kind === '就诊记录').sort((a, b) => b.date.localeCompare(a.date))[0];
+    if (lastV) {
+        const since = (p.tl || []).filter(r => r.date > lastV.date).sort((a, b) => b.date.localeCompare(a.date));
+        top.push({ h: '上次就诊以来（患者自填）', lines: ['上次就诊：' + lastV.date + (lastV.hosp ? ' · ' + lastV.hosp : '')].concat(since.length ? since.slice(0, 6).map(line).concat(since.length > 6 ? ['另有 ' + (since.length - 6) + ' 条较早记录，见下方或时间线'] : []) : ['此后没有新记录']) });
+    }
+    sec.splice(1, 0, ...top);
     const title = p.member + ' · ' + dn(p) + (p.disease === 'rare' ? (p.age === 'child' ? '（儿童）' : '（成人）') : '') + ' 复诊摘要', meta = '生成于 ' + today() + ' · 记录范围：' + ({ '3m': '近3个月', '6m': '近半年', all: '全部' }[rg]), note = '请先核对内容是否完整、准确，再带给医生。本摘要由用户自行录入的资料整理而成，仅供复诊参考，不含诊断或解读。标 ▲ 的指标，表示最新值超出页面中所设或通用的参考范围，仅作提示。';
     return { title, meta, note, sec, tl, md: '# ' + title + '\n> ' + meta + '\n\n' + sec.map(x => '## ' + x.h + '\n' + x.lines.map(l => '- ' + l).join('\n')).join('\n\n') + '\n\n> ' + note };
 }
@@ -776,7 +823,7 @@ function smView0(p) {
     const s = smData(p);
     return `<div class="seg">${[['3m', '近3个月'], ['6m', '近半年'], ['all', '全部']].map(r => `<button class="chip" aria-pressed="${(S.sr || '3m') === r[0]}" data-act="sr" data-r="${r[0]}">${r[1]}</button>`).join('')}</div><div class="card"><label style="margin-top:0">这次想问医生的问题（每行一个）</label><textarea data-k="ask" placeholder="如：&#10;下次复查什么时候做？&#10;这个药有哪些副作用需要注意？">${esc(p.data.ask || '')}</textarea></div><details class="card sm smd"${S.smClosed ? '' : ' open'}><summary><b>${esc(s.title)}</b></summary><p class="sub">${esc(s.meta)}</p>${s.sec.length ? s.sec.map(x => `<h3>${esc(x.h)}</h3><ul>${x.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>`).join('') : '<p class="sub">还没有可汇总的资料。先在「档案」「时间线」「指标趋势」里录入。</p>'}<p class="sub" style="font-size:14px;line-height:1.5">${esc(s.note)}</p></details><details class="card sm-check" open><summary><b>导出前核对</b></summary><p class="sub">逐项确认内容后，再复制、分享或导出。核对记录只保存在本机。</p>${[['date','日期和医院正确'],['med','药名和剂量正确'],['result','检查结果没有明显遗漏'],['order','医生交代事项已检查'],['ask','想问医生的问题已整理']].map(([k,t]) => `<label class="checkline"><input type="checkbox" data-act="smcheck" data-k="${k}" ${(p.data.smChecks || {})[k] ? 'checked' : ''}><span>${t}</span></label>`).join('')}<div class="bar"><button class="btn" data-act="smcopy">复制文字摘要</button> <button class="ghost" data-act="smshare">发给家人</button> <button class="ghost" data-act="smpdf">导出 PDF（含图片）</button> <button class="ghost" data-act="smconfirm">我已核对，可以导出</button></div></details><p class="sub" style="color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)">如果要把摘要粘贴到第三方 AI 应用，请先去掉姓名、身份证号等个人信息。</p>`;
 }
-const ptRow = (m, x) => S.mxe === m.id + '|' + x.id ? `<div class="item"><div class="row"><input id="pe_d" type="date" value="${esc(x.date)}" aria-label="日期"><input id="pe_v" type="number" step="any" inputmode="decimal" value="${x.v}" aria-label="数值"></div><input id="pe_n" placeholder="备注（可不填）" value="${esc(x.note || '')}" style="margin-top:8px"><div class="row" style="margin-top:8px"><input id="pe_rl" type="number" step="any" inputmode="decimal" placeholder="化验单下限" value="${hasL(x) ? x.rl : ''}" aria-label="化验单参考下限"><input id="pe_rh" type="number" step="any" inputmode="decimal" placeholder="化验单上限" value="${hasL(x) ? x.rh : ''}" aria-label="化验单参考上限"></div><input id="pe_o" placeholder="检测机构（可不填）" value="${esc(x.org || '')}" style="margin-top:8px"><div class="bar"><button class="ghost" data-act="mxecancel" data-id="${m.id}">取消</button><button class="btn" data-act="mxesave" data-id="${m.id}" data-pd="${x.id}">保存</button></div></div>` : `<div class="item row2"><span>${esc(x.date)} · <b class="${inRP(m, x) ? '' : 'bad'}">${x.v}</b>${hasL(x) ? ' · 化验单参考 ' + (x.rl === '' ? '—' : x.rl) + '~' + (x.rh === '' ? '—' : x.rh) : ''}${x.org ? ' · ' + esc(x.org) : ''}${x.note ? ' · ' + esc(x.note) : ''}</span><span><button class="ghost" data-act="mxedit" data-id="${m.id}" data-pd="${x.id}">编辑</button> <button class="ghost" data-act="mxdel" data-id="${m.id}" data-pd="${x.id}">删除</button></span></div>`;
+const ptRow = (m, x) => S.mxe === m.id + '|' + x.id ? `<div class="item"><div class="row"><input id="pe_d" type="date" value="${esc(x.date)}" aria-label="日期"><input id="pe_v" type="number" step="any" inputmode="decimal" value="${x.v}" aria-label="数值"></div><input id="pe_n" placeholder="备注（可不填）" value="${esc(x.note || '')}" style="margin-top:8px"><div class="row" style="margin-top:8px"><input id="pe_rl" type="number" step="any" inputmode="decimal" placeholder="化验单下限" value="${hasL(x) ? x.rl : ''}" aria-label="化验单参考下限"><input id="pe_rh" type="number" step="any" inputmode="decimal" placeholder="化验单上限" value="${hasL(x) ? x.rh : ''}" aria-label="化验单参考上限"></div><input id="pe_o" placeholder="检测机构（可不填）" value="${esc(x.org || '')}" style="margin-top:8px"><div class="bar"><button class="ghost" data-act="mxecancel" data-id="${m.id}">取消</button><button class="btn" data-act="mxesave" data-id="${m.id}" data-pd="${x.id}">保存</button></div></div>` : `<div class="item row2"><span>${esc(x.date)}${x.time ? ' ' + esc(x.time) : ''} · <b class="${inRP(m, x) ? '' : 'bad'}">${x.v}</b>${hasL(x) ? ' · 化验单参考 ' + (x.rl === '' ? '—' : x.rl) + '~' + (x.rh === '' ? '—' : x.rh) : ''}${x.org ? ' · ' + esc(x.org) : ''}${x.note ? ' · ' + esc(x.note) : ''}</span><span><button class="ghost" data-act="mxedit" data-id="${m.id}" data-pd="${x.id}">编辑</button> <button class="ghost" data-act="mxdel" data-id="${m.id}" data-pd="${x.id}">删除</button></span></div>`;
 const askModal = h => new Promise(res => { const o = document.createElement('div'); o.className = 'ov'; o.innerHTML = '<div class="mod">' + h + '<div class="bar"><button class="ghost" id="ao_n">取消</button><button class="btn" id="ao_y">确认恢复</button></div></div>'; document.body.appendChild(o); o.querySelector('#ao_n').onclick = () => { o.remove(); res(false); }; o.querySelector('#ao_y').onclick = () => { o.remove(); res(true); }; });
 function mkDemo() {
     const D0 = n => new Date(Date.now() - n * 864e5 - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10), pt = (n, v) => ({ id: 'x' + n, date: D0(n), v });
@@ -922,8 +969,8 @@ function visitFlowCard(p, nv) {
     const day = d === 0 ? '今天' : d < 0 ? '已过期 ' + (-d) + ' 天' : d + ' 天后';
     const status = visitDone ? '用户确认已完成' : summaryDone ? '等待复诊' : calendarDone ? '日历文件已下载' : prepared ? '准备中' : '已设置日期';
     const step = (n, title, desc, done, action, label) => `<div class="flow-step${done ? ' flow-done' : ''}"><span class="flow-num">${done ? '✓' : n}</span><div class="flow-main"><b>${title}</b><small>${done ? '已完成本步骤' : desc}</small></div>${!done && action ? `<button class="${n === 4 ? 'ghost' : 'btn'}" data-act="${action}" data-pid="${p.id}">${label}</button>` : ''}</div>`;
-    const follow = visitDone ? `<div class="post-visit"><b>复诊后，补记下一步</b><p class="sub">把医生新交代的内容记下来；填写下一次复诊日期后，会自动建立下一轮复诊准备。没有新增内容也可以直接结束。</p><textarea id="vf_text" placeholder="如：两周后复查血常规；继续按医生交代用药">${esc(p.data.visitFollowupText || '')}</textarea><div class="row"><input id="vf_date" type="date" value="${esc(p.data.visitFollowupDate || '')}" aria-label="下一次复诊日期"><button class="btn" data-act="vfollowup" data-pid="${p.id}">保存复诊后记录</button></div></div>` : '';
-    return `<div class="card flow"><div class="tlh"><h2 style="margin:0">复诊准备</h2><span class="tag ${d < 0 ? 'bad' : ''}">${esc(status)} · ${day} · ${esc(nv)}</span></div><p class="sub">${esc(label(p))} · 只根据你自己填写的日期和资料生成，不会判断病情。</p>${step(1, '准备就诊清单', prepared ? '清单已建立，当前勾选 ' + ckDone + '/' + c.items.length + ' 项' : '选择“复查”模板，系统会建立一份可编辑清单。', prepared, 'vprepare', prepared ? '查看清单' : '去准备')}${step(2, '准备日历提醒文件', calendarDone ? '文件已下载；是否导入系统日历需由你确认。' : '下载文件后，请在系统日历中打开并确认导入。', calendarDone, 'vcalendar', '下载文件')}${step(3, '核对复诊摘要', summaryDone ? '摘要已标记为本次复诊材料。' : '打开摘要，核对范围、未完成事项和想问医生的问题。', summaryDone, 'vsummary', '去核对')}${step(4, '确认本次复诊完成', visitDone ? '你已确认完成；不代表医院系统已完成记录。' : '看完医生后由你确认；不代表医院系统已完成记录。', visitDone, 'vdone', '我已完成')}${follow}</div>`;
+    const follow = visitDone ? `<div class="post-visit"><b>复诊后，补记下一步</b><p class="sub">把医生新交代的内容记下来；填写下一次复诊日期后，会自动建立下一轮复诊准备。没有新增内容也可以直接结束。</p><textarea id="vf_text" placeholder="如：两周后复查血常规；继续按医生交代用药">${esc(p.data.visitFollowupText || '')}</textarea><div class="row"><input id="vf_date" type="date" value="${esc(p.data.visitFollowupDate || '')}" aria-label="下一次复诊日期"><button class="btn" data-act="vfollowup" data-pid="${p.id}">保存复诊后记录</button></div><button class="ghost" data-act="vfollowup" data-pid="${p.id}" data-skip="1" style="margin-top:8px">没有新增内容，结束本次</button></div>` : '';
+    return `<div class="card flow"><div class="tlh"><h2 style="margin:0">${visitDone ? '复诊完成，补记下一步' : '复诊准备'}</h2><span class="tag ${d < 0 ? 'bad' : ''}">${esc(status)} · ${day} · ${esc(nv)}</span></div><p class="sub">${esc(label(p))} · 只根据你自己填写的日期和资料生成，不会判断病情。</p>${step(1, '准备就诊清单', prepared ? '清单已建立，当前勾选 ' + ckDone + '/' + c.items.length + ' 项' : '选择“复查”模板，系统会建立一份可编辑清单。', prepared, 'vprepare', prepared ? '查看清单' : '去准备')}${step(2, '准备日历提醒文件', calendarDone ? '文件已下载；是否导入系统日历需由你确认。' : '下载文件后，请在系统日历中打开并确认导入。', calendarDone, 'vcalendar', '下载文件')}${step(3, '核对复诊摘要', summaryDone ? '摘要已标记为本次复诊材料。' : '打开摘要，核对范围、未完成事项和想问医生的问题。', summaryDone, 'vsummary', '去核对')}${step(4, '确认本次复诊完成', visitDone ? '你已确认完成；不代表医院系统已完成记录。' : '看完医生后由你确认；不代表医院系统已完成记录。', visitDone, 'vdone', '我已完成')}${follow}</div>`;
 }
 function todayItems() {
     const out = [], sz = snzGet(), t0 = today();
@@ -933,9 +980,9 @@ function todayItems() {
             const k = 'o' + o.id;
             if (sz[k] === t0) return;
             const d = daysTo(o.due);
-            out.push({ k, pr: d < 0 ? 0 : 1, bad: d < 0, tag: d < 0 ? '已过期 ' + (-d) + ' 天' : d === 0 ? '今天到期' : d + ' 天后到期', who: label(p), text: o.cat + '：' + o.text, btns: `<button class="btn" data-act="tdone" data-pid="${p.id}" data-id="${o.id}">标记已完成</button>` + more(`<button class="ghost" data-act="tics" data-pid="${p.id}" data-id="${o.id}">下载日历提醒文件</button><button class="ghost" data-act="tsnz" data-k="${k}">今天不提醒</button>`) });
+            out.push({ k, pr: d < 0 ? 0 : 1, bad: d < 0, tag: d < 0 ? '已过期 ' + (-d) + ' 天' : d === 0 ? '今天到期' : d + ' 天后到期', who: label(p), text: (o.cat === '复诊后记录' ? '你自己记的：' : o.cat + '：') + o.text, btns: `<button class="btn" data-act="tdone" data-pid="${p.id}" data-id="${o.id}">标记已完成</button>` + more(`<button class="ghost" data-act="tics" data-pid="${p.id}" data-id="${o.id}">下载日历提醒文件</button><button class="ghost" data-act="tsnz" data-k="${k}">今天不提醒</button>`) });
         });
-        (p.meds || []).forEach(m => {
+        (p.meds || []).filter(medDaily).forEach(m => {
             const c = medCnt(p, m), k = 'M' + m.id;
             if (c >= m.per || sz[k] === t0) return;
             out.push({ k, pr: 1, tag: '今天 ' + c + '/' + m.per + ' 次', who: label(p), text: m.name, btns: `<button class="btn" data-act="mdlog" data-pid="${p.id}" data-id="${m.id}">记一次</button>` + more(`<button class="ghost" data-act="tsnz" data-k="${k}">今天不提醒</button>`) });
@@ -944,8 +991,14 @@ function todayItems() {
     });
     return out.sort((a, b) => a.pr - b.pr).slice(0, 6);
 }
+function flowVisit(p) {
+    const nv = nextVisit(p), d = p.data || {};
+    if (nv) return nv;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d.nvd || '') && d.nvd < today() && d.visitDoneAt !== d.nvd && daysTo(d.nvd) >= -14) return d.nvd;
+    return d.visitDoneAt && d.visitFollowedAt !== d.visitDoneAt && daysTo(d.visitDoneAt) >= -30 ? d.visitDoneAt : '';
+}
 function primaryVisit() {
-    return S.profiles.map(p => ({ p, nv: nextVisit(p) })).filter(x => x.nv).sort((a, b) => a.nv.localeCompare(b.nv) || label(a.p).localeCompare(label(b.p)))[0] || null;
+    return S.profiles.map(p => ({ p, nv: flowVisit(p) })).filter(x => x.nv).sort((a, b) => a.nv.localeCompare(b.nv) || label(a.p).localeCompare(label(b.p)))[0] || null;
 }
 function otherVisitList(primary) {
     const rows = S.profiles.filter(p => !primary || p.id !== primary.p.id).map(p => {
@@ -960,8 +1013,10 @@ function todayCard() {
     const primary = primaryVisit();
     const flow = primary ? visitFlowCard(primary.p, primary.nv) : '';
     const others = otherVisitList(primary);
+    if (!L.length && flow) return flow + others;
     if (!L.length) return S.profiles.length ? flow + others + `<div class="card today"><b>今天没有其他待处理事项</b><p class="sub">复诊任务会单独显示在上方；这里的其他事项只根据你明确填写的医嘱和当前用药生成。</p></div>` : '';
-    return flow + others + `<div class="card hd today"><h2>今天要处理（${L.length}）</h2><p class="sub">只根据您自己记录的内容整理，不是医疗建议。</p><p class="action-note">完成记录后会保留短暂的“撤销”入口；页面关闭后不会主动推送。</p>${L.map(i => `<div class="item"><div class="tlh"><b>${esc(i.who || '提醒')}</b><span class="tag ${i.bad ? 'bad' : ''}">${esc(i.tag)}</span></div><div class="tlt">${esc(i.text)}</div><div class="row">${i.btns}</div></div>`).join('')}<details><summary>说明</summary><p class="sub">页面关闭后不会主动推送。想让手机到点响铃，请下载日历提醒文件，然后在系统日历中打开并确认导入；本页面不会直接替你设置手机提醒。</p></details></div>`;
+    const tdOpen = !flow || S.tdOpen || L.some(x => x.bad);
+    return flow + others + `<details class="card hd today td"${tdOpen ? ' open' : ''}><summary><b>今天要处理（${L.length}）</b></summary><p class="sub">只根据您自己记录的内容整理，不是医疗建议。</p><p class="action-note">完成记录后会保留短暂的“撤销”入口；页面关闭后不会主动推送。想在这里打卡服药，请先在档案的“我的药”里添加。</p>${L.map(i => `<div class="item"><div class="tlh"><b>${esc(i.who || '提醒')}</b><span class="tag ${i.bad ? 'bad' : ''}">${esc(i.tag)}</span></div><div class="tlt">${esc(i.text)}</div><div class="row">${i.btns}</div></div>`).join('')}<details><summary>说明</summary><p class="sub">页面关闭后不会主动推送。想让手机到点响铃，请下载日历提醒文件，然后在系统日历中打开并确认导入；本页面不会直接替你设置手机提醒。</p></details></details>`;
 }
 const icsEsc = x => String(x || '').replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
 function icsFor(p, o) {
@@ -1054,21 +1109,26 @@ function tplMgr(p) {
     return `<details class="card"><summary><b>自定义病历模板</b></summary>${L.map(t => `<div class="item row2"><span><b>${esc(t.name)}</b><br><small>${t.fields.map(esc).join('、')}</small></span><button class="ghost del" data-act="tpldel" data-id="${t.id}">删除</button></div>`).join('')}<label>模板名称</label><input id="tn" placeholder="如 复查记录、化疗周期记录"><label>字段（每行一个）</label><textarea id="tfs" placeholder="如：&#10;体重(kg)&#10;不适症状&#10;下次复查日期"></textarea><div class="bar"><button class="btn" data-act="tplnew">保存模板</button></div></details>`;
 }
 
+const PLAUS = { '空腹血糖': [1, 40], '餐后2h血糖': [1, 40], 'HbA1c': [3, 20], '血肌酐': [20, 2000], '血尿酸': [50, 1500], 'LDL-C': [0.2, 15], '心率': [20, 250], '体重': [2, 300], '血红蛋白': [20, 220], '血小板': [1, 2000], '白细胞': [0.1, 500], '血钾': [1.5, 9], '血钙': [1, 5], 'eGFR': [1, 200], 'TSH': [0.001, 200] };
+const MFREQ = { day: '每天', week: '每周一次', alt: '隔天一次', prn: '需要时才吃', course: '按疗程' };
+const medDaily = m => !m.stopped && (!m.freq || m.freq === 'day');
+const medTxt = m => (m.dose ? m.dose + ' · ' : '') + ((!m.freq || m.freq === 'day') ? '每天 ' + m.per + ' 次' : MFREQ[m.freq]) + (m.note ? '（' + m.note + '）' : '') + (m.start ? ' · ' + m.start + ' 开始' : '') + (m.stopped ? ' · 已停用' + (m.stopAt ? '（' + m.stopAt + '）' : '') : '');
 const medCnt = (p, m) => (p.tl || []).filter(r => r.kind === '用药' && r.date === today() && r.text === '已服药：' + m.name).length;
 function medsView(p) {
-    const L = p.meds || [];
-    return `<details class="fl" data-fk="meds"${(S.lo || {}).meds ? ' open' : ''}><summary><b>我的药</b>（${L.length} 种）</summary><p class="sub">记下每种药一天吃几次，首页会显示今天还差几次。只记录，不提供用药建议；药名和剂量请照医生的处方写。</p>${L.map(m => `<div class="item"><div class="tlh"><b>${esc(m.name)}</b><span class="tag">每天 ${m.per} 次</span></div><div class="row"><button class="ghost del" data-act="mddel" data-id="${m.id}">删除</button></div></div>`).join('')}<label>药名和剂量</label><input id="mdn" maxlength="60" placeholder="如 氨氯地平 5mg"><label>每天几次</label><select id="mdp">${[1, 2, 3, 4].map(n => `<option value="${n}">每天 ${n} 次</option>`).join('')}</select><div class="bar"><button class="btn" data-act="mdadd">添加这种药</button></div></details>`;
+    const L = p.meds || [], A_ = L.filter(m => !m.stopped), Z_ = L.filter(m => m.stopped);
+    const row = m => `<div class="item"${m.stopped ? ' style="opacity:.65"' : ''}><div class="tlh"><b>${esc(m.name)}</b>${m.stopped ? '<span class="tag">已停用</span>' : ''}</div><div class="sub">${esc(medTxt(m).replace(' · 已停用', ''))}</div><div class="row"><button class="ghost" data-act="mdstop" data-id="${m.id}">${m.stopped ? '恢复使用' : '标记停用'}</button><button class="ghost del" data-act="mddel" data-id="${m.id}">删除</button></div></div>`;
+    return `<details class="fl" data-fk="meds"${(S.lo || {}).meds ? ' open' : ''}><summary><b>我的药</b>（${L.length ? A_.length + ' 种在用' + (Z_.length ? '，' + Z_.length + ' 种已停' : '') : '还没添加，先加常吃的药'}）</summary><p class="sub">照医生的处方填写药名、剂量和用法。只有选“每天”的药，首页才会提示今天还差几次；每周、隔天、需要时吃的药，只记录、不提醒。只记录，不提供用药建议。</p>${A_.map(row).join('')}${Z_.length ? `<details class="more"><summary>已停用的药（${Z_.length}）</summary>${Z_.map(row).join('')}</details>` : ''}<label>药名</label><input id="mdn" maxlength="60" placeholder="如 氨氯地平"><label>剂量（照处方写）</label><input id="mdd" maxlength="40" placeholder="如 5 mg / 1 片"><label>用法</label><select id="mdf">${Object.keys(MFREQ).map(k => `<option value="${k}">${MFREQ[k]}</option>`).join('')}</select><label>如果选“每天”，一天几次</label><select id="mdp">${[1, 2, 3, 4].map(n => `<option value="${n}">每天 ${n} 次</option>`).join('')}</select><label>开始日期（可不填）</label><input id="mds" type="date"><label>备注（可不填）</label><input id="mdt" maxlength="60" placeholder="如 吃14天停7天；饭后服"><div class="bar"><button class="btn" data-act="mdadd">添加这种药</button></div></details>`;
 }
 function medsToday(p) {
-    const L = p.meds || [];
+    const L = (p.meds || []).filter(m => !m.stopped);
     if (!L.length)
         return '';
-    const left = L.filter(m => medCnt(p, m) < m.per).length;
-    return `<details class="card mt"${S.mtOpen ? ' open' : ''}><summary><b>今天服药</b>（${left ? '还差 ' + left + ' 种' : '都记完了'}）</summary>${L.map(m => { const c = medCnt(p, m); return `<div class="item"><div class="tlh"><b>${esc(m.name)}</b><span class="tag">${c}/${m.per} 次</span></div><div class="row"><button class="${c < m.per ? 'btn' : 'ghost'}" data-act="mdlog" data-pid="${p.id}" data-id="${m.id}">记一次</button></div></div>`; }).join('')}</details>`;
+    const left = L.filter(m => medDaily(m) && medCnt(p, m) < m.per).length;
+    return `<details class="card mt"${S.mtOpen ? ' open' : ''}><summary><b>今天服药</b>（${left ? '还差 ' + left + ' 种' : '每天要吃的都记完了'}）</summary>${L.map(m => { const c = medCnt(p, m), dly = medDaily(m); return `<div class="item"><div class="tlh"><b>${esc(m.name)}</b><span class="tag">${dly ? c + '/' + m.per + ' 次' : MFREQ[m.freq] + ' · 今天记 ' + c + ' 次'}</span></div>${m.dose || m.note ? `<div class="sub">${esc([m.dose, m.note].filter(Boolean).join(' · '))}</div>` : ''}<div class="row"><button class="${dly && c < m.per ? 'btn' : 'ghost'}" data-act="mdlog" data-pid="${p.id}" data-id="${m.id}">记一次</button></div></div>`; }).join('')}</details>`;
 }
 function tlView(p) {
     const all = (p.tl || []).slice().sort((x, y) => y.date.localeCompare(x.date) || y.id.localeCompare(x.id)), q = (S.q || '').trim().toLowerCase(), a = all.filter(r => (!S.kf || r.kind === S.kf) && (!q || [r.text, r.hosp, r.kind, r.tpl, r.date, ...(r.fields || []).map(x => x.n + x.v)].join(' ').toLowerCase().includes(q)));
-    return medsToday(p) + ordView(p) + `<details class="card hd addrec"${S.addOpen ? ' open' : ''}><summary><b>＋ 添加一条记录</b></summary><label>记录类型</label><select id="tk">${KINDS.map(k => `<option>${k}</option>`).join('')}</select><label>日期</label><input id="td" type="date" value="${today()}"><label>医院 / 科室</label><input id="th" value="${esc(p.data.hosp || ((p.tl || []).slice().sort((x, y) => y.date.localeCompare(x.date)).find(r => r.hosp) || {}).hosp || '')}">${tplPick(p)}<label>内容摘要</label><textarea id="tt" placeholder="如 主诉、检查结果、药名剂量、反应表现"></textarea><div class="row"><button class="ghost" data-act="txclean">整理文字格式</button><button class="ghost" data-act="txext">查找已有指标的数值</button></div><label>图片（化验单、CT/MRI、基因报告）</label><input id="tlf" type="file" accept="image/*" multiple><div id="tlprev" class="thumbs prev" hidden></div><p class="note2" id="tlhint" hidden>照片只是对照用的，不会自动识别文字。请对着图片在上面填写；点图片可放大。</p><div class="bar"><span class="saved" id="tfn"></span><button class="btn" data-act="tlsave">保存到时间线</button></div></details><details class="card"><summary><b>导出与模板</b></summary><div class="row"><button class="ghost" data-act="csv">导出 CSV</button><button class="ghost" data-act="pdf">导出 PDF</button></div>${tplMgr(p)}</details><h2 class="gt" style="margin-top:14px">病程时间线</h2>${tlFilter(p, all.length)}` + (a.length ? a.map(r => recCard(r, p)).join('') : `<div class="card empty"><p class="sub">${all.length ? '没有符合条件的记录，请换个关键词或类型。' : '点击上方添加第一条记录，开始追踪病程 ↑'}</p></div>`);
+    return medsToday(p) + ordView(p) + `<details class="card hd addrec"${S.addOpen ? ' open' : ''}><summary><b>＋ 添加一条记录</b></summary><label>记录类型</label><select id="tk">${KINDS.map(k => `<option>${k}</option>`).join('')}</select><label>日期</label><input id="td" type="date" value="${today()}"><label>具体时间（可不填，如发热、胸痛发作的时刻）</label><input id="tti" type="time"><label>医院 / 科室</label><input id="th" value="${esc(p.data.hosp || ((p.tl || []).slice().sort((x, y) => y.date.localeCompare(x.date)).find(r => r.hosp) || {}).hosp || '')}">${tplPick(p)}<label>内容摘要</label><textarea id="tt" placeholder="如 主诉、检查结果、药名剂量、反应表现"></textarea><div class="row"><button class="ghost" data-act="txclean">整理文字格式</button><button class="ghost" data-act="txext">查找已有指标的数值</button></div><label>图片（化验单、CT/MRI、基因报告）</label><input id="tlf" type="file" accept="image/*" multiple><div id="tlprev" class="thumbs prev" hidden></div><p class="note2" id="tlhint" hidden>照片只是对照用的，不会自动识别文字。请对着图片在上面填写；点图片可放大。</p><div class="bar"><span class="saved" id="tfn"></span><button class="btn" data-act="tlsave">保存到时间线</button></div></details><details class="card"><summary><b>导出与模板</b></summary><div class="row"><button class="ghost" data-act="csv">导出 CSV</button><button class="ghost" data-act="pdf">导出 PDF</button></div>${tplMgr(p)}</details><h2 class="gt" style="margin-top:14px">病程时间线</h2>${tlFilter(p, all.length)}` + (a.length ? a.map(r => recCard(r, p)).join('') : `<div class="card empty"><p class="sub">${all.length ? '没有符合条件的记录，请换个关键词或类型。' : '点击上方添加第一条记录，开始追踪病程 ↑'}</p></div>`);
 }
 const pt = s => { s = String(s || ''); const m = s.match(/\d+(\.\d+)?/g); if (!m)
     return ['', '']; const a = m.map(Number); if (a.length >= 2)
@@ -1080,7 +1140,7 @@ function syncT(p) { if (!p.mx || !['hyper', 'diabetes', 'cardio', 'gout'].includ
 function presets(p) {
     const d = p.data, n = (v, x) => d[v] !== undefined && d[v] !== '' && !isNaN(+d[v]) ? +d[v] : x;
     const M = (name, unit, lo, hi) => { const o = HP && HP.rg && HP.rg[name], m = { id: 'm' + name.replace(/[^\w\u4e00-\u9fa5-]/g, ''), name, unit, lo, hi, pts: [] }; if (Array.isArray(o) && o.length === 2 && o.every(x => x === '' || typeof x === 'number')) { m.lo = o[0]; m.hi = o[1]; m.my = 1; m.rsrc = 'hosp'; } return m; };
-    const G = (name, unit, lo, hi) => HP && HP.hideRef ? M(name, unit, '', '') : M(name, unit, lo, hi);
+    const G = (name, unit, lo, hi) => HP && HP.showRef && !HP.hideRef ? M(name, unit, lo, hi) : M(name, unit, '', '');
     if (p.disease === 'tumor')
         return [G('CEA', 'ng/mL', '', 5), G('AFP', 'ng/mL', '', 7), G('CA199', 'U/mL', '', 37), G('CA125', 'U/mL', '', 35), G('CA153', 'U/mL', '', 25)];
     if (p.disease === 'breast')
@@ -1144,7 +1204,7 @@ function chart(m, pts) {
 function mCard(m) {
     const days = S.range === 'week' ? 7 : S.range === 'month' ? 30 : 1e5, lim = Date.now() - days * 864e5;
     const all = m.pts.slice().sort((a, b) => a.date.localeCompare(b.date)), pts = all.filter(x => new Date(x.date).getTime() >= lim), last = all[all.length - 1];
-    return `<div class="card"><div class="tlh"><h2 style="margin:0">${esc(m.name)}</h2>${last ? `<span class="val ${inRP(m, last) ? '' : 'bad'}">${last.v} <small>${esc(m.unit)}</small></span>` : ''}</div><div class="sub">${m.lo === '' && m.hi === '' ? '未设置范围，不会标红。可在下方填写医生给你的目标' : (m.my ? (SRC[m.rsrc || 'me'] || SRC.me) : m.src === 't' ? '来自档案里的目标' : '通用参考值（因人而异，不是你的诊断或医生定的目标）') + ' ' + (m.lo !== '' ? m.lo : '—') + ' ~ ' + (m.hi !== '' ? m.hi : '—') + (m.my || m.src === 't' ? '，超出标红' : '，仅作对照，不会标红。想要标红提示，请在下方填你自己的范围，或在每次录入时填化验单上的范围')}</div>${m.pts.length ? chart(m, pts) : '<div class="sub">录入第一个数值，开启趋势追踪 ↓</div>'}${all.some(hasL) ? '<div class="sub">图上红点按每次记录自己的化验单参考范围判断；虚线是上面设置的统一范围，两者可能不同。' + (new Set(all.filter(hasL).map(x => x.rl + '~' + x.rh)).size > 1 ? '<b>各次化验单的参考范围并不一致</b>（每次的范围见下方记录列表）。' : '') + '</div>' : ''}<details class="entry" data-mid="${m.id}"${(S.mxo || {})[m.id] ? ' open' : ''}><summary><b>＋ 记一次数值</b></summary><div class="row"><input id="d_${m.id}" type="date" value="${today()}" aria-label="日期"><input id="v_${m.id}" type="number" step="any" inputmode="decimal" placeholder="数值" aria-label="数值"></div><input id="n_${m.id}" placeholder="备注（可不填，如 早晨、餐后）" aria-label="备注" style="margin-top:8px"><details><summary>化验单上的参考范围、检测机构（可选）</summary><p class="sub">照化验单抄。填了参考范围，这一次是否标红就按化验单的范围判断。</p><div class="row"><input id="rl_${m.id}" type="number" step="any" inputmode="decimal" placeholder="化验单下限" aria-label="化验单参考下限"><input id="rh_${m.id}" type="number" step="any" inputmode="decimal" placeholder="化验单上限" aria-label="化验单参考上限"></div><input id="og_${m.id}" placeholder="检测机构（可不填）" aria-label="检测机构" style="margin-top:8px"></details><div class="bar"><button class="btn" data-act="mxadd" data-id="${m.id}">添加数值</button></div></details><details ${S.mxe && S.mxe.startsWith(m.id + '|') ? 'open' : ''}><summary>修改范围 / 查看记录</summary><div class="row"><input id="lo_${m.id}" type="number" step="any" placeholder="下限" value="${m.lo}" aria-label="下限"><input id="hi_${m.id}" type="number" step="any" placeholder="上限" value="${m.hi}" aria-label="上限"></div><label>这个范围是谁给的</label><select id="rs_${m.id}">${Object.keys(SRC).map(k => `<option value="${k}" ${(m.rsrc || 'me') === k ? 'selected' : ''}>${SRC[k]}</option>`).join('')}</select><div class="bar"><button class="ghost" data-act="mxrange" data-id="${m.id}">保存范围</button></div>${all.slice().reverse().map(x => `${ptRow(m, x)}`).join('')}<div class="bar"><button class="ghost del" data-act="mxrm" data-id="${m.id}">删除该指标</button></div></details></div>`;
+    return `<div class="card"><div class="tlh"><h2 style="margin:0">${esc(m.name)}</h2>${last ? `<span class="val ${inRP(m, last) ? '' : 'bad'}">${last.v} <small>${esc(m.unit)}</small></span>` : ''}</div><div class="sub">${m.lo === '' && m.hi === '' ? '未设置范围，不会标红。可在下方填写医生给你的目标' : (m.my ? (SRC[m.rsrc || 'me'] || SRC.me) : m.src === 't' ? '来自档案里的目标' : '通用参考值（因人而异，不是你的诊断或医生定的目标）') + ' ' + (m.lo !== '' ? m.lo : '—') + ' ~ ' + (m.hi !== '' ? m.hi : '—') + (m.my || m.src === 't' ? '，超出标红' : '，仅作对照，不会标红。想要标红提示，请在下方填你自己的范围，或在每次录入时填化验单上的范围')}</div>${m.pts.length ? chart(m, pts) : '<div class="sub">录入第一个数值，开启趋势追踪 ↓</div>'}${all.some(hasL) ? '<div class="sub">图上红点按每次记录自己的化验单参考范围判断；虚线是上面设置的统一范围，两者可能不同。' + (new Set(all.filter(hasL).map(x => x.rl + '~' + x.rh)).size > 1 ? '<b>各次化验单的参考范围并不一致</b>（每次的范围见下方记录列表）。' : '') + '</div>' : ''}<details class="entry" data-mid="${m.id}"${(S.mxo || {})[m.id] ? ' open' : ''}><summary><b>＋ 记一次数值</b></summary><div class="row"><input id="d_${m.id}" type="date" value="${today()}" aria-label="日期"><input id="v_${m.id}" type="number" step="any" inputmode="decimal" placeholder="数值" aria-label="数值"></div><input id="tm_${m.id}" type="time" aria-label="时间（可不填）" style="margin-top:8px"><input id="n_${m.id}" placeholder="备注（可不填，如 早晨、餐后）" aria-label="备注" style="margin-top:8px"><details><summary>化验单上的参考范围、检测机构（可选）</summary><p class="sub">照化验单抄。填了参考范围，这一次是否标红就按化验单的范围判断。</p><div class="row"><input id="rl_${m.id}" type="number" step="any" inputmode="decimal" placeholder="化验单下限" aria-label="化验单参考下限"><input id="rh_${m.id}" type="number" step="any" inputmode="decimal" placeholder="化验单上限" aria-label="化验单参考上限"></div><input id="og_${m.id}" placeholder="检测机构（可不填）" aria-label="检测机构" style="margin-top:8px"></details><div class="bar"><button class="btn" data-act="mxadd" data-id="${m.id}">添加数值</button></div></details><details ${S.mxe && S.mxe.startsWith(m.id + '|') ? 'open' : ''}><summary>修改范围 / 查看记录</summary><div class="row"><input id="lo_${m.id}" type="number" step="any" placeholder="下限" value="${m.lo}" aria-label="下限"><input id="hi_${m.id}" type="number" step="any" placeholder="上限" value="${m.hi}" aria-label="上限"></div><label>这个范围是谁给的</label><select id="rs_${m.id}">${Object.keys(SRC).map(k => `<option value="${k}" ${(m.rsrc || 'me') === k ? 'selected' : ''}>${SRC[k]}</option>`).join('')}</select><div class="bar"><button class="ghost" data-act="mxrange" data-id="${m.id}">保存范围</button></div>${all.slice().reverse().map(x => `${ptRow(m, x)}`).join('')}<div class="bar"><button class="ghost del" data-act="mxrm" data-id="${m.id}">删除该指标</button></div></details></div>`;
 }
 
 const bpOK = p => p.disease === 'hyper' || p.disease === 'cardio';
@@ -1165,10 +1225,6 @@ function mxView(p) {
     }
     syncT(p);
     let h = `<div class="seg">${[['week', '周'], ['month', '月'], ['all', '全病程']].map(r => `<button class="chip" aria-pressed="${S.range === r[0]}" data-act="range" data-r="${r[0]}">${r[1]}</button>`).join('')}</div>` + '<p class="sub note2" style="color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)">范围线只是提示：超出或在范围内，都不代表病情好坏，请以医生的判断为准。</p>' + bpCard(p) + p.mx.map(mCard).join('');
-    if (p.disease === 'hyper') {
-        const ms = (p.tl || []).filter(r => r.kind === '用药').sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
-        h += `<div class="card"><h2>服药记录</h2><label>药名和剂量</label><input id="med" placeholder="如 氨氯地平 5mg"><div class="bar"><button class="btn" data-act="med">记录已服药</button></div>${ms.map(r => `<div class="sub">${r.date} · ${esc(r.text)}</div>`).join('')}</div>`;
-    }
     const kid = p.disease === 'rare' && p.age === 'child';
     return h + `<details class="card"><summary><b>＋ ${p.disease === 'rare' ? '添加检验项目 / 评估得分' : '添加自定义指标'}</b></summary>${p.disease === 'rare' && !p.mx.length ? '<p class="sub">罕见病指标因人而异，请按化验单或评估报告自行添加。</p>' : ''}<label>名称</label><input id="nn" placeholder="${kid ? '如 粗大运动得分、语言评估得分' : '如 肌酸激酶'}"><label>单位</label><input id="nu" placeholder="如 U/L、分"><div class="row"><div><label>下限</label><input id="nl" type="number" step="any" inputmode="decimal"></div><div><label>上限</label><input id="nh" type="number" step="any" inputmode="decimal"></div></div><div class="bar"><button class="btn" data-act="mxnew">添加指标</button></div></details>`;
 }
@@ -1197,32 +1253,40 @@ function extra(act, b, p) {
         return 2;
     }
     if (act === 'vdone') {
+        if (!okAsk('确认这次复诊已经完成吗？点“确定”后，这张复诊卡片会变成“补记下一步”。'))
+            return 2;
         const q = S.profiles.find(x => x.id === b.dataset.pid);
         if (q && q.data.nvd) { const before = q.data.visitDoneAt || ''; q.data.visitDoneAt = q.data.nvd; save(); showActionUndo('已记录本次复诊完成', () => { q.data.visitDoneAt = before; save(); }); }
         return 1;
     }
     if (act === 'vfollowup') {
-        const q = S.profiles.find(x => x.id === b.dataset.pid), text = (g('vf_text') || {}).value?.trim() || '', due = (g('vf_date') || {}).value || '';
+        const q = S.profiles.find(x => x.id === b.dataset.pid), text = b.dataset.skip ? '' : ((g('vf_text') || {}).value?.trim() || ''), due = b.dataset.skip ? '' : ((g('vf_date') || {}).value || '');
         if (!q) return 2;
-        const before = { text: q.data.visitFollowupText || '', date: q.data.visitFollowupDate || '', nvd: q.data.nvd || '', orders: (q.orders || []).slice() };
-        q.data.visitFollowupText = text; q.data.visitFollowupDate = due;
-        if (due) q.data.nvd = due;
-        if (text) {
+        const skip = !!b.dataset.skip, before = { text: q.data.visitFollowupText || '', date: q.data.visitFollowupDate || '', nvd: q.data.nvd || '', fol: q.data.visitFollowedAt || '', orders: (q.orders || []).slice() };
+        q.data.visitFollowedAt = q.data.visitDoneAt || '';
+        q.data.visitFollowupText = skip ? '' : text; q.data.visitFollowupDate = skip ? '' : due;
+        if (!skip && due) q.data.nvd = due;
+        if (!skip && text) {
             q.orders = q.orders || [];
             q.orders.push({ id: 'o' + Date.now(), date: today(), cat: '复诊后记录', text, due, done: false });
         }
-        save(); view(); showActionUndo(due ? '已建立下一轮复诊准备' : (text ? '已保存复诊后记录' : '已保存：本次暂无新增内容'), () => { q.data.visitFollowupText = before.text; q.data.visitFollowupDate = before.date; q.data.nvd = before.nvd; q.orders = before.orders; save(); view(); });
+        save(); view(); showActionUndo(due ? '已建立下一轮复诊准备' : (text ? '已保存复诊后记录' : '已保存：本次暂无新增内容'), () => { q.data.visitFollowupText = before.text; q.data.visitFollowupDate = before.date; q.data.nvd = before.nvd; q.data.visitFollowedAt = before.fol; q.orders = before.orders; save(); view(); });
         return 1;
     }
     if (act === 'smshare') { sensitiveGate('分享', () => shareText('复诊摘要', smData(p).md)); return 2; }
     if (act === 'mdadd') {
-        const nm = g('mdn').value.trim(), pr = parseInt(g('mdp').value, 10);
-        if (!nm) { alert('请填写药名和剂量'); return 2; }
+        const nm = g('mdn').value.trim(), pr = parseInt(g('mdp').value, 10), fq = g('mdf').value, st = g('mds').value;
+        if (!nm) { alert('请填写药名'); return 2; }
         if (!p.meds) p.meds = [];
         if (p.meds.length >= 50) { alert('最多记 50 种药'); return 2; }
-        p.meds.push({ id: 'd' + Date.now(), name: nm.slice(0, 60), per: pr >= 1 && pr <= 6 ? pr : 1 });
+        p.meds.push({ id: 'd' + Date.now(), name: nm.slice(0, 60), dose: g('mdd').value.trim().slice(0, 40), freq: MFREQ[fq] ? fq : 'day', per: fq === 'day' && pr >= 1 && pr <= 6 ? pr : 1, start: /^\d{4}-\d{2}-\d{2}$/.test(st) ? st : '', note: g('mdt').value.trim().slice(0, 60), stopped: false });
         S.lo = S.lo || {}; S.lo.meds = true;
         save();
+        return 1;
+    }
+    if (act === 'mdstop') {
+        const m = (p.meds || []).find(x => x.id === b.dataset.id);
+        if (m) { m.stopped = !m.stopped; if (m.stopped) m.stopAt = today(); else delete m.stopAt; save(); }
         return 1;
     }
     if (act === 'mddel') {
@@ -1570,6 +1634,7 @@ function extra(act, b, p) {
         }
         r.kind = g('ek').value;
         r.date = d;
+        if (/^\d{2}:\d{2}$/.test(g('eti').value)) r.time = g('eti').value; else delete r.time;
         r.hosp = g('eh').value.trim();
         r.text = g('et').value.trim();
         document.querySelectorAll('[data-ef]').forEach(e => { const x = (r.fields || [])[+e.dataset.ef]; if (x)
@@ -1588,7 +1653,7 @@ function extra(act, b, p) {
         return 1;
     }
     if (act === 'smconfirm') {
-        if (p && p.data) { const checks = p.data.smChecks || {}; const keys = ['date','med','result','order','ask']; if (!keys.every(k => checks[k])) { alert('请先完成上方 5 项核对'); return 2; } const before = { at: p.data.visitSummaryAt || '', checks: { ...checks } }; p.data.visitSummaryAt = nextVisit(p) || today(); save(); showActionUndo('已标记摘要已核对', () => { p.data.visitSummaryAt = before.at; p.data.smChecks = before.checks; save(); }); }
+        if (p && p.data) { const checks = p.data.smChecks || {}; const keys = ['date','med','result','order','ask']; const miss = keys.filter(k => !checks[k]).length; if (miss && !okAsk('上面还有 ' + miss + ' 项没有勾选核对，仍要标记为“已核对”吗？\n（可以先去勾选，也可以请家人帮忙核对）')) return 2; const before = { at: p.data.visitSummaryAt || '', checks: { ...checks } }; p.data.visitSummaryAt = nextVisit(p) || today(); save(); showActionUndo('已标记摘要已核对', () => { p.data.visitSummaryAt = before.at; p.data.smChecks = before.checks; save(); }); }
         return 1;
     }
     if (act === 'smpdf') { sensitiveGate('导出 PDF', () => openPdf(p)); return 2; }
@@ -1627,7 +1692,7 @@ function extra(act, b, p) {
             return 2;
         }
         S.addOpen = false;
-        const r = { id: 'r' + Date.now(), kind: g('tk').value, date: g('td').value || today(), hosp: g('th').value.trim(), text: tx, imgs: [], tpl: tp ? tp.name : '', fields: fv };
+        const r = { id: 'r' + Date.now(), kind: g('tk').value, date: g('td').value || today(), time: /^\d{2}:\d{2}$/.test(g('tti').value) ? g('tti').value : undefined, hosp: g('th').value.trim(), text: tx, imgs: [], tpl: tp ? tp.name : '', fields: fv };
         (async () => {
             let fail = 0;
             for (const x of fs) {
@@ -1741,9 +1806,12 @@ function extra(act, b, p) {
             alert('请填写数值');
             return 2;
         }
+        const pl = PLAUS[m.name];
+        if (pl && (v < pl[0] || v > pl[1]) && !okAsk('“' + m.name + '”填了 ' + v + (m.unit ? ' ' + m.unit : '') + '，看起来不太常见。请核对单位和小数点（化验单上的单位是 ' + (m.unit || '—') + '）。仍然保存吗？'))
+            return 2;
         if (S.mxo)
             S.mxo[m.id] = false;
-        const pn = { id: 'x' + Date.now(), date: g('d_' + m.id).value || today(), v, note: g('n_' + m.id).value.trim() }, rl = f(g('rl_' + m.id).value), rh = f(g('rh_' + m.id).value), og = g('og_' + m.id).value.trim();
+        const pn = { id: 'x' + Date.now(), date: g('d_' + m.id).value || today(), v, note: g('n_' + m.id).value.trim() }, tmv = (g('tm_' + m.id) || {}).value || '', rl = f(g('rl_' + m.id).value), rh = f(g('rh_' + m.id).value), og = g('og_' + m.id).value.trim();
         if (rl !== '' && rh !== '' && rl > rh) {
             alert('化验单参考范围的下限不能大于上限');
             return 2;
@@ -1754,6 +1822,8 @@ function extra(act, b, p) {
         }
         if (og)
             pn.org = og;
+        if (/^\d{2}:\d{2}$/.test(tmv))
+            pn.time = tmv;
         m.pts.push(pn);
         save();
         return 1;
@@ -1812,7 +1882,7 @@ async function shrink(f) { try {
 catch (e) {
     return f;
 } }
-/* 医院配置：n 名称，w 引导语，l 院徽(data URI)，hideRef:true 隐藏通用参考范围，rg:{指标名:[下限,上限]} 本院参考范围（'' 表示无该侧） */
+/* 医院配置：n 名称，w 引导语，l 院徽(data URI)，showRef:true 显示肿瘤标志物的通用参考上限（默认隐藏），hideRef:true 强制隐藏，rg:{指标名:[下限,上限]} 本院参考范围（'' 表示无该侧） */
 const HOSP = { demo: { hideRef: true, n: '示例医院（演示）', w: '本工具是医院为 VIP 客户提供的病程资料整理工具，资料只保存在您自己的设备上。', l: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiMwZjVjNTUiLz48cGF0aCBkPSJNMjYgMTRoMTJ2MTJoMTJ2MTJIMzh2MTJIMjZWMzhIMTRWMjZoMTJ6IiBmaWxsPSIjZmZmIi8+PC9zdmc+' } };
 const HP = (() => { try {
     const k = new URLSearchParams(location.search).get('hospital');
@@ -1928,7 +1998,7 @@ app.addEventListener('click', e => {
         return;
     window.__b = b;
     const act = b.dataset.act, p = cur();
-    if (LOCK && ['new', 'create', 'demo', 'addrow', 'rm', 'tlsave', 'med', 'oradd', 'ordone', 'orundo', 'tdone', 'tmed', 'bpadd', 'mdadd', 'mddel', 'mdlog', 'ordel', 'tldel', 'mxnew', 'mxadd', 'mxesave', 'mxrange', 'mxdel', 'mxrm', 'tplnew', 'tpldel', 'tlupd', 'tlstar', 'del', 'ckstart', 'cktog', 'ckdel', 'ckadd', 'ckclr', 'pzclr'].includes(act)) {
+    if (LOCK && ['new', 'create', 'demo', 'addrow', 'rm', 'tlsave', 'med', 'oradd', 'ordone', 'orundo', 'tdone', 'tmed', 'bpadd', 'mdadd', 'mdstop', 'mddel', 'mdlog', 'ordel', 'tldel', 'mxnew', 'mxadd', 'mxesave', 'mxrange', 'mxdel', 'mxrm', 'tplnew', 'tpldel', 'tlupd', 'tlstar', 'del', 'ckstart', 'cktog', 'ckdel', 'ckadd', 'ckclr', 'pzclr'].includes(act)) {
         alert('数据异常保护中：请先从备份恢复，或在页面顶部选择放弃异常数据后重新开始。');
         return;
     }
@@ -1952,11 +2022,11 @@ app.addEventListener('click', e => {
     else if (act === 'cancel')
         S.view = S.profiles.length ? 'home' : 'list';
     else if (act === 'sub') {
-        S.draft.member = document.getElementById('mn').value;
+        S.draft.member = document.getElementById('mn').value; if (document.getElementById('nvd_new')) S.draft.nvd = document.getElementById('nvd_new').value; if (document.getElementById('oname_new')) S.draft.oname = document.getElementById('oname_new').value;
         S.draft.sub = b.dataset.s;
     }
     else if (act === 'dis') {
-        S.draft.member = document.getElementById('mn').value;
+        S.draft.member = document.getElementById('mn').value; if (document.getElementById('nvd_new')) S.draft.nvd = document.getElementById('nvd_new').value; if (document.getElementById('oname_new')) S.draft.oname = document.getElementById('oname_new').value;
         S.draft.disease = b.dataset.d;
         if (S.draft.disease !== 'rare')
             delete S.draft.age;
@@ -1986,7 +2056,13 @@ app.addEventListener('click', e => {
             alert('请选择肿瘤类型');
             return;
         }
-        const n = { id: 'p' + Date.now(), member: d.member, disease: d.disease === 'tumor' && SUBD[d.sub] ? SUBD[d.sub] : d.disease, sub: d.disease === 'tumor' && !SUBD[d.sub] ? d.sub : undefined, age: d.age, data: d.nvd ? { nvd: d.nvd } : {} };
+        const on = document.getElementById('oname_new') ? document.getElementById('oname_new').value.trim() : '';
+        if (d.disease === 'other' && !on) {
+            alert('请填写疾病名称');
+            return;
+        }
+        const n = { id: 'p' + Date.now(), member: d.member, disease: d.disease === 'tumor' && SUBD[d.sub] ? SUBD[d.sub] : d.disease, sub: d.disease === 'tumor' && !SUBD[d.sub] ? d.sub : undefined, age: d.age, data: Object.assign(d.nvd ? { nvd: d.nvd } : {}, d.disease === 'other' ? { oname: on } : {}) };
+        S.lo = Object.assign(S.lo || {}, { meds: true }); S.tab = 'info';
         S.profiles.push(n);
         S.cur = n.id;
         S.view = 'list';
@@ -2046,7 +2122,8 @@ app.addEventListener('toggle', e => { const d = e.target; if (!d || !d.classList
     S.pzOpen = d.open; else if (d.classList.contains('bp'))
     S.bpOpen = d.open; else if (d.classList.contains('mt'))
     S.mtOpen = d.open; else if (d.classList.contains('wk'))
-    S.wkOpen = d.open; else if (d.classList.contains('ckd'))
+    S.wkOpen = d.open; else if (d.classList.contains('td'))
+    S.tdOpen = d.open; else if (d.classList.contains('ckd'))
     S.ckOpen = d.open; else if (d.classList.contains('smd'))
     S.smClosed = !d.open; else if (d.classList.contains('fl')) {
     S.lo = S.lo || {}; S.lo[d.dataset.fk] = d.open; } else if (d.classList.contains('entry')) {
